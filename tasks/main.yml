@@ -40,7 +40,25 @@
   package:
     name: "{{ gitlab_package_name | default(gitlab_edition) }}"
     state: present
-  when: not gitlab_file.stat.exists
+  when: (not gitlab_file.stat.exists and gitlab_install_server == true)
+
+- name: Check if GitLab Runner is already installed.
+  stat: path=/usr/bin/gitlab-runner
+  register: gitlab_runner_file
+
+- name: Download GitLab Runner repository installation script.
+  get_url:
+    url: "{{ gitlab_runner_repository_installation_script_url }}"
+    dest: /tmp/gitlab_runner_install_repository.sh
+  when: (gitlab_runner_file.stat.exists == false and gitlab_install_runner == true)
+
+- name: Install GitLab Runner repository
+  command: bash /tmp/gitlab_runner_install_repository.sh
+  when: (gitlab_runner_file.stat.exists == false and gitlab_install_runner == true)
+
+- name: Install GitLab Runner
+  package: name=gitlab-ci-multi-runner state=installed
+  when: (gitlab_runner_file.stat.exists == false and gitlab_install_runner == true)
 
 # Start and configure GitLab. Sometimes the first run fails, but after that,
 # restarts fix problems, so ignore failures on this run.
@@ -49,6 +67,7 @@
     gitlab-ctl reconfigure
     creates=/var/opt/gitlab/bootstrapped
   failed_when: false
+  when: (gitlab_install_server == true)
 
 - name: Create GitLab SSL configuration folder.
   file:
@@ -57,14 +76,14 @@
     owner: root
     group: root
     mode: 0700
-  when: gitlab_create_self_signed_cert
+  when: (gitlab_create_self_signed_cert and gitlab_install_server == true)
 
 - name: Create self-signed certificate.
   command: >
     openssl req -new -nodes -x509 -subj "{{ gitlab_self_signed_cert_subj }}"
     -days 3650 -keyout {{ gitlab_ssl_certificate_key }} -out {{ gitlab_ssl_certificate }} -extensions v3_ca
     creates={{ gitlab_ssl_certificate }}
-  when: gitlab_create_self_signed_cert
+  when: (gitlab_create_self_signed_cert and gitlab_install_server == true)
 
 - name: Copy GitLab configuration file.
   template:
@@ -73,4 +92,5 @@
     owner: root
     group: root
     mode: 0600
+  when: gitlab_install_server == true
   notify: restart gitlab
