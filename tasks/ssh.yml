@@ -1,0 +1,42 @@
+---
+
+- name: gitlab-runner-ssh| Create .ssh directory
+  file: >
+    dest={{gitlab_runner_home}}/.ssh
+    state=directory
+    owner={{gitlab_runner_user}}
+    group={{gitlab_runner_group}}
+    mode=0700
+
+- name: Configure SSH client
+  ssh_config:
+    host={{ item.host }} hostname={{ item.hostname | default(item.host) }}
+    identity_file={{ item.identity_file | default('id_rsa') }} port={{ item.port | default('22') }}
+    remote_user={{ item.user }}
+    user={{ gitlab_runner_user }}
+    state={{ item.state | default('present') }}
+  with_items: '{{ gitlab_runner_ssh_hosts }}'
+  when: gitlab_runner_ssh_hosts is defined
+  tags: ['users']
+
+- name: gitlab-runner-ssh from variable| Copy private key
+  template: >
+    src=ssh_private_key.j2
+    dest="{{gitlab_runner_home}}/.ssh/{{ item.file_name | default('id_rsa') }}"
+    owner={{gitlab_runner_user}}
+    group={{gitlab_runner_group}}
+    mode=0600
+  with_items: "{{gitlab_runner_ssh_keys}}"
+
+- name: gitlab-runner-ssh | Setup SSH hosts
+  lineinfile:
+    line="{{item}}"
+    insertafter="EOF"
+    state="present"
+    create="yes"
+    mode="0644"
+    dest="{{gitlab_runner_home}}/.ssh/known_hosts"
+    owner="{{gitlab_runner_user}}"
+  with_items: "{{gitlab_runner_ssh_fingerprints}}"
+
+...

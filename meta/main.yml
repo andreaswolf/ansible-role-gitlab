@@ -1,5 +1,6 @@
 ---
-dependencies: []
+dependencies:
+  - gaqzi.ssh-config
 
 galaxy_info:
   author: geerlingguy

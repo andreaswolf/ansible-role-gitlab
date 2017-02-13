@@ -107,3 +107,7 @@
     mode: 0600
   when: gitlab_install_server == true
   notify: restart gitlab
+
+- include: ssh.yml
+  when: gitlab_install_runner == true
+  tags: ['gitlab-ssh']
