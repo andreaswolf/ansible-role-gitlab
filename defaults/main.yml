@@ -15,6 +15,10 @@ gitlab_redirect_http_to_https: "true"
 gitlab_ssl_certificate: "/etc/gitlab/ssl/gitlab.crt"
 gitlab_ssl_certificate_key: "/etc/gitlab/ssl/gitlab.key"
 
+# Workhorse configuration
+gitlab_workhorse_listen_network: "unix" # or "tcp"
+gitlab_workhorse_listen_address: "" # or something like "127.0.0.1:8181"
+
 # SSL Self-signed Certificate Configuration.
 gitlab_create_self_signed_cert: "true"
 gitlab_self_signed_cert_subj: "/C=US/ST=Missouri/L=Saint Louis/O=IT/CN=gitlab"
