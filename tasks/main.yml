@@ -85,6 +85,19 @@
     creates={{ gitlab_ssl_certificate }}
   when: (gitlab_create_self_signed_cert and gitlab_install_server == true)
 
+- name: Create cronjob for backup
+  cron:
+    name: 'Gitlab backup'
+    job: '/opt/gitlab/bin/gitlab-rake gitlab:backup:create'
+    day: '*'
+    hour: 3
+    minute: 30
+    state: present
+    # todo define user from item
+    user: root
+  when: gitlab_install_server == true
+
+
 - name: Copy GitLab configuration file.
   template:
     src: "{{ gitlab_config_template }}"
