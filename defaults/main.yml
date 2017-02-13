@@ -7,6 +7,8 @@ gitlab_version: ''
 gitlab_backup_path: "/var/opt/gitlab/backups"
 gitlab_config_template: "gitlab.rb.j2"
 
+gitlab_nginx_enable: true
+
 gitlab_install_server: true
 gitlab_install_runner: false
 
