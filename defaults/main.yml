@@ -12,6 +12,7 @@ gitlab_config_template: "gitlab.rb.j2"
 #gitlab_container_registry_url: "https://core.gitlab"
 
 gitlab_nginx_enable: true
+gitlab_external_webserver_user: ''
 
 gitlab_install_server: true
 gitlab_install_runner: false
