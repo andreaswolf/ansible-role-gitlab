@@ -46,6 +46,14 @@
   stat: path=/usr/bin/gitlab-runner
   register: gitlab_runner_file
 
+- name: Pin Gitlab Runner to custom repository
+  template:
+    src: repository_pin_file.j2
+    dest: "/etc/apt/preferences.d/pin-gitlab-runner.pref"
+    owner: root
+    group: root
+    mode: "0600"
+
 - name: Download GitLab Runner repository installation script.
   get_url:
     url: "{{ gitlab_runner_repository_installation_script_url }}"
@@ -57,8 +65,10 @@
   when: (gitlab_runner_file.stat.exists == false and gitlab_install_runner == true)
 
 - name: Install GitLab Runner
-  package: name=gitlab-ci-multi-runner state=installed
-  when: (gitlab_runner_file.stat.exists == false and gitlab_install_runner == true)
+  package:
+    name: gitlab-runner
+    state: present
+  when: gitlab_install_runner == true
 
 # Start and configure GitLab. Sometimes the first run fails, but after that,
 # restarts fix problems, so ignore failures on this run.
