@@ -17,6 +17,9 @@ gitlab_external_webserver_user: ''
 gitlab_install_server: true
 gitlab_install_runner: false
 
+gitlab_runners: []
+gitlab_runner_env_vars: []
+
 # SSL Configuration.
 gitlab_redirect_http_to_https: "true"
 gitlab_ssl_certificate: "/etc/gitlab/ssl/gitlab.crt"

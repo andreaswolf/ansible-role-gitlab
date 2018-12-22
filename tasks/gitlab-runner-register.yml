@@ -1,0 +1,30 @@
+---
+
+- name: "Check if already registered"
+  lineinfile:
+    name: /etc/gitlab-runner/config.toml
+    line: '  name = "{{ item.name }}"'
+    state: present
+  check_mode: yes
+  register: conf
+
+- name: 'Register runner "{{ item.name }}"'
+  command: >
+    gitlab-runner register
+    --non-interactive
+    --url '{{ item.coordinator_url }}'
+    --registration-token '{{ gitlab_runner_registration_token }}'
+    --description '{{ item.name }}'
+    --tag-list '{{ item.tags | join(",") }}'
+    --executor '{{ item.executor }}'
+    --limit '{{ item.concurrency }}'
+    --locked='{{ item.locked | default(false) }}'
+    {% for env_var in gitlab_runner_env_vars %}
+    --env '{{ env_var }}'
+    {% endfor %}
+    {% if item.executor == 'docker' %}
+    --docker-image '{{ item.docker_image }}'
+    {% endif %}
+  when: conf.changed
+
+...

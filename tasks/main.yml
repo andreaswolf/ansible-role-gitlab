@@ -118,6 +118,20 @@
   when: gitlab_install_server == true
   notify: restart gitlab
 
+- name: Set runner concurrency
+  lineinfile:
+    path: /etc/gitlab-runner/config.toml
+    line: "concurrent = 10"
+    regex: "^concurrent = \\d+"
+  when: gitlab_install_runner == true and gitlab_runner_registration_token is defined
+  tags: ['gitlab-runner']
+
+- name: Register Gitlab runners
+  include: gitlab-runner-register.yml
+  with_items: '{{ gitlab_runners }}'
+  when: gitlab_install_runner == true and gitlab_runner_registration_token is defined
+  tags: ['gitlab-runner']
+
 - include: ssh.yml
   when: gitlab_install_runner == true
   tags: ['gitlab-ssh']
