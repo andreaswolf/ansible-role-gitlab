@@ -74,6 +74,10 @@ nginx['ssl_verify_client'] = "{{ gitlab_nginx_ssl_verify_client }}"
 nginx['ssl_client_certificate'] = "{{ gitlab_nginx_ssl_client_certificate }}"
 {% endif %}
 
+{% if gitlab_container_registry_url is defined and gitlab_container_registry_url != "" %}
+registry_external_url '{{ gitlab_container_registry_url }}'
+{% endif %}
+
 gitlab_workhorse['listen_network'] = "{{ gitlab_workhorse_listen_network }}"
 gitlab_workhorse['listen_addr'] = "{{ gitlab_workhorse_listen_address }}"
 

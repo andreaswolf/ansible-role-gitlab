@@ -7,6 +7,10 @@ gitlab_version: ''
 gitlab_backup_path: "/var/opt/gitlab/backups"
 gitlab_config_template: "gitlab.rb.j2"
 
+# Container registry config
+# see <https://docs.gitlab.com/ce/administration/container_registry.html#enable-the-container-registry>
+#gitlab_container_registry_url: "https://core.gitlab"
+
 gitlab_nginx_enable: true
 
 gitlab_install_server: true
