@@ -80,6 +80,10 @@ nginx['ssl_client_certificate'] = "{{ gitlab_nginx_ssl_client_certificate }}"
 registry_external_url '{{ gitlab_container_registry_url }}'
 {% endif %}
 
+{% if gitlab_monitoring_whitelist %}
+gitlab_rails['monitoring_whitelist'] = ['{{ gitlab_monitoring_whitelist | join('\', \'') }}']
+{% endif %}
+
 gitlab_workhorse['listen_network'] = "{{ gitlab_workhorse_listen_network }}"
 gitlab_workhorse['listen_addr'] = "{{ gitlab_workhorse_listen_address }}"
 
