@@ -87,5 +87,7 @@ gitlab_rails['monitoring_whitelist'] = ['{{ gitlab_monitoring_whitelist | join('
 gitlab_workhorse['listen_network'] = "{{ gitlab_workhorse_listen_network }}"
 gitlab_workhorse['listen_addr'] = "{{ gitlab_workhorse_listen_address }}"
 
+gitlab_pages['access_control'] = {{ 'true' if (gitlab_pages_access_control | default(false)) else 'false' }}
+
 # To change other settings, see:
 # https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#changing-gitlab-yml-settings
