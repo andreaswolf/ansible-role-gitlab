@@ -25,6 +25,12 @@
     {% if runner.executor == 'docker' %}
     --docker-image '{{ runner.docker_image }}'
     {% endif %}
+    {% if runner.executor == 'ssh' %}
+    --ssh-user {{ runner.ssh_user }}
+    --ssh-host {{ runner.ssh_host }}
+    --ssh-port {{ runner.ssh_port | default(22) }}
+    --ssh-identity-file {{ runner.ssh_identity_file }}
+    {% endif %}
   when: conf.changed
 
 ...
