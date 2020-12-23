@@ -52,7 +52,7 @@
     dest: "/etc/apt/preferences.d/pin-gitlab-runner.pref"
     owner: root
     group: root
-    mode: "0600"
+    mode: "0644"
 
 - name: Download GitLab Runner repository installation script.
   get_url:
