@@ -127,8 +127,10 @@
   tags: ['gitlab-runner']
 
 - name: Register Gitlab runners
-  include: gitlab-runner-register.yml
-  with_items: '{{ gitlab_runners }}'
+  include_tasks: gitlab-runner-register.yml
+  loop: '{{ gitlab_runners }}'
+  loop_control:
+    loop_var: runner
   when: gitlab_install_runner == true and gitlab_runner_registration_token is defined
   tags: ['gitlab-runner']
 
