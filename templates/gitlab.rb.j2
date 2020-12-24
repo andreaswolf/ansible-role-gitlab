@@ -91,3 +91,13 @@ gitlab_pages['access_control'] = {{ 'true' if (gitlab_pages_access_control | def
 
 # To change other settings, see:
 # https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#changing-gitlab-yml-settings
+
+{% if gitlab_registry_storage %}
+registry['storage'] = {
+  '{{ gitlab_registry_storage.type }}' => {
+    {% for key, value in gitlab_registry_storage.config %}
+        '{{ key }}' => '{{ value }}',
+    {% endfor %}
+  }
+}
+{% endif %}
